@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import {
-  StyleSheet, View, Alert, Modal, Dimensions, TouchableOpacity, Image,
+  StyleSheet,
+  View,
+  Alert,
+  Modal,
+  Dimensions,
+  TouchableOpacity,
+  Image,
+  WebView,
 } from 'react-native';
 import qs from 'qs';
 import axios from 'axios';
-import { WebView } from 'react-native-webview';
 const { width, height } = Dimensions.get('window');
 
 const patchPostMessageJsCode = `(${String(function () {
@@ -16,7 +22,7 @@ const patchPostMessageJsCode = `(${String(function () {
   patchedPostMessage.toString = function () {
     return String(Object.hasOwnProperty).replace(
       'hasOwnProperty',
-      'postMessage',
+      'postMessage'
     );
   };
   window.postMessage = patchedPostMessage;
@@ -103,7 +109,7 @@ export default class Instagram extends Component {
         this.hide();
         this.props.onLoginFailure(json);
       }
-    } catch (err) { }
+    } catch (err) {}
   }
 
   // _onLoadEnd () {
@@ -138,7 +144,9 @@ export default class Instagram extends Component {
     const { appId, appSecret, redirectUrl, scopes, responseType } = this.props;
     const { key } = this.state;
 
-    let ig_uri = `https://api.instagram.com/oauth/authorize/?app_id=${appId}&redirect_uri=${redirectUrl}&response_type=${responseType}&scope=${scopes.join(',')}`;
+    let ig_uri = `https://api.instagram.com/oauth/authorize/?app_id=${appId}&redirect_uri=${redirectUrl}&response_type=${responseType}&scope=${scopes.join(
+      ','
+    )}`;
 
     return (
       <WebView
@@ -150,7 +158,9 @@ export default class Instagram extends Component {
         onNavigationStateChange={this.onNavigationStateChange.bind(this)}
         onError={this.onNavigationStateChange.bind(this)}
         onMessage={this.onMessage.bind(this)}
-        ref={(webView) => { this.webView = webView; }}
+        ref={(webView) => {
+          this.webView = webView;
+        }}
         injectedJavaScript={patchPostMessageJsCode}
       />
     );
@@ -166,7 +176,8 @@ export default class Instagram extends Component {
         animationType={'slide'}
         visible={this.state.modalVisible}
         onRequestClose={this.onClose.bind(this)}
-        transparent>
+        transparent
+      >
         <View style={[styles.container, containerStyle]}>
           <View style={[styles.wrapper, wrapperStyle]}>
             {this.renderWebview()}
@@ -175,7 +186,8 @@ export default class Instagram extends Component {
             onPress={() => this.onClose()}
             style={[styles.close, closeStyle]}
             accessibilityComponentType={'button'}
-            accessibilityTraits={['button']}>
+            accessibilityTraits={['button']}
+          >
             {this.renderClose()}
           </TouchableOpacity>
         </View>
@@ -209,7 +221,7 @@ const defaultProps = {
   onLoginFailure: (failureJson) => {
     console.debug(failureJson);
   },
-  responseType: 'code'
+  responseType: 'code',
 };
 
 Instagram.propTypes = propTypes;
